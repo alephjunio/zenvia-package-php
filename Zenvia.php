@@ -1,15 +1,17 @@
 <?php
 
-// use Model\SmsFacade;
-// use Model\Sms;
-
 spl_autoload_register(function($class){
-  if (file_exists("Model/$class.php")) {
-    require "Model/$class.php";
+
+  $models = "'Model/$class.php";
+  $restClients = "RestClient/$class.php";
+
+  if (file_exists($models)) {
+    require($models);
   }
-  if (file_exists("RestClient/$class.php")) {
-    require "RestClient/$class.php";
+  if (file_exists($restClients)) {
+    require($restClients);
   }
+
 });
 
 class Zenvia
@@ -65,7 +67,7 @@ class Zenvia
   }
 
 
-  public  function send($to ,$message ,$day ,$month ,$year ,$hour ,$min )
+  public function send($to ,$message ,$when)
   {
     $sms = new Sms();
     $sms->setTo($to);
@@ -74,9 +76,10 @@ class Zenvia
     $sms->setCallbackOption(Sms::CALLBACK_ALL);
 
     $date = new \DateTime();
+    $when = new DateTime($when);
     $date->setTimeZone(new DateTimeZone('America/Sao_Paulo'));
-    $date->setDate($year, $month, $day);
-    $date->setTime($hour, $min, 00);
+    $date->setDate($when->format('Y'), $when->format('m'), $when->format('d'));
+    $date->setTime($when->format('H'), $when->format('i'), $when->format('s'));
     $schedule = $date->format("Y-m-d\TH:i:s");
 
     //Formato da data deve obedecer ao padrão descrito na ISO-8601. Exemplo "2015-12-31T09:00:00"
@@ -105,7 +108,7 @@ class Zenvia
 
 
 
-  public function sendMany(Array $array,$message,$day ,$month ,$year ,$hour ,$min)
+  public function sendMany(Array $array,$message,$when)
   {
 
     $smsList = [];
@@ -118,9 +121,10 @@ class Zenvia
       $sms->setCallbackOption(Sms::CALLBACK_ALL);
 
       $date = new \DateTime();
+      $dateTime = new DateTime($when);
       $date->setTimeZone(new DateTimeZone('America/Sao_Paulo'));
-      $date->setDate($year, $month, $day);
-      $date->setTime($hour, $min, 00);
+      $date->setDate($dateTime->format('Y'), $dateTime->format('m'), $dateTime->format('d'));
+      $date->setTime($dateTime->format('H'), $dateTime->format('i'), $dateTime->format('s'));
       $schedule = $date->format("Y-m-d\TH:i:s");
 
       //Formato da data deve obedecer ao padrão descrito na ISO-8601. Exemplo "2015-12-31T09:00:00"
@@ -150,19 +154,21 @@ class Zenvia
 
 
 
-  public function searchSmsReceived(Array $dateOne,Array $dateTwoo,String $mobile,Int $smsId)
+  public function searchSmsReceived(String $star,String $end,String $mobile,Int $smsId)
   {
 
     $date = new \DateTime();
-    $date->setDate($dateOne['year'], $dateOne['month'], $dateOne['day']);
-    $date->setTime($dateOne['hour'], $dateOne['min'], $dateOne['second']);
+    $star = new DateTime($star);
+    $date->setDate($when->format('Y'), $when->format('m'), $when->format('d'));
+    $date->setTime($when->format('H'), $when->format('i'), $when->format('s'));
 
     //Formato da data deve obedecer ao padrão descrito na ISO-8601. Exemplo "2015-12-31T09:00:00".
     $startPeriod = $date->format("Y-m-d\TH:i:s");
 
     $date2 = new \DateTime();
-    $date->setDate($dateTwoo['year'], $dateTwoo['month'], $dateTwoo['day']);
-    $date->setTime($dateTwoo['hour'], $dateTwoo['min'], $dateTwoo['second']);
+    $end = new DateTime($end);
+    $date2->setDate($end->format('Y'), $end->format('m'), $end->format('d'));
+    $date2->setTime($end->format('H'), $end->format('i'), $end->format('s'));
     //Formato da data deve obedecer ao padrão descrito na ISO-8601. Exemplo "2015-12-31T09:00:00".
     $endPeriod = $date2->format("Y-m-d\TH:i:s");
 
@@ -201,7 +207,6 @@ class Zenvia
 
 
     $smsFacade = $this->authZenvia();
-
     try {
       $response = $smsFacade->getStatus($smsId);
       //Código e descrição do status atual da mensagem
