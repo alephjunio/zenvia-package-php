@@ -1,0 +1,6 @@
+*.phar
+vendor
+.DS_Store
+venv
+phpunit
+.phpunit.result.cache
