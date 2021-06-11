@@ -2,7 +2,7 @@
 
 <phpunit bootstrap="src/autoload.php" colors="true" verbose="true" stopOnFailure="false">
     <testsuites>
-        <testsuite name="Primeiro Example">
+        <testsuite name="Teste do Zenvia">
             <directory>tests</directory>
         </testsuite>
     </testsuites>

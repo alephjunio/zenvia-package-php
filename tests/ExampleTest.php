@@ -4,7 +4,6 @@ namespace Tests;
 
 use PHPUnit\Framework\TestCase;
 use Example\Example;
-use Example\Currency;
 
 class ExampleTest extends TestCase
 {
