@@ -1,61 +1,18 @@
 <?php
+require 'src/autoload.php';
 
-spl_autoload_register(function($class){
-  if (file_exists("$class.php")) {
-    require "$class.php";
-  }
-});
+// Initialization with your API token (x-api-token)
+$client = new ZenviaSDK\Client('q40Vp_AjKFn65boNgcZ_A7blZ65EDnewrGt4');
 
+// Choosing the channel
+$sms = $client->getChannel('sms');
 
+// Creating a text content
+$contents[] = new ZenviaSDK\Lib\Contents\TextContent('Teste Funcionou!');
 
-$array = [
-  '551199995555',
-  '551199995555',
-  '551199995555',
-  '551199995555',
-  '551199995555',
-  '551199995555',
-];
-
-$sms = new Zenvia('teste','teste');
-$sms->sendMany($array,'TESTE',10,05,2018,13,30);
-
-echo "<hr />";
-
-$dateStart = [
-  'day'   => 25,
-  'month' => 05,
-  'year'  => 2015,
-  'hour'  => 23,
-  'min'   => 30,
-  'second'=> 00
-];
-
-$dateEnd =   [
-  'day'   => 25,
-  'month' => 05,
-  'year'  => 2015,
-  'hour'  => 23,
-  'min'   => 30,
-  'second'=> 00
-];
-
-$sms2 = new Zenvia('teste','teste');
-$sms2->searchSmsReceived($dateStart,$dateEnd,'551199998877',0001);
-
-
-echo "<hr />";
-
-
-$sms3 = new Zenvia('teste','teste');
-$sms3->allReceived();
-echo "<hr />";
-
-
-$sms4 = new Zenvia('teste','teste');
-$sms4->getStatus(0001);
-echo "<hr />";
-
-
-$sms5 = new Zenvia('teste','teste');
-$sms5->cancelSms(0001);
+try {
+    echo $sms->sendMessage('wandering-hemisphere', '5511996457108', $contents);
+}
+catch(Exception $e) {
+    echo 'Exceção capturada: ',  $e->getMessage(), "\n";
+}
