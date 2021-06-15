@@ -2,7 +2,7 @@
 
 namespace ZenviaSDK\Lib\Contents;
 
-class TextContent {
+class TextContent extends AbstractContent{
 
     /**
      * @var string
@@ -13,7 +13,7 @@ class TextContent {
     * @param string $text
     */
     public function __construct($text = '') {
+        parent::__construct('text');
         $this->text = $text;
-        $this->type = 'text';
     }
 }
